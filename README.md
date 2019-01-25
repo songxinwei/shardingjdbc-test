@@ -9,10 +9,10 @@ Cannot find data source in sharding rule, invalid actual data node is: 'mydb1.us
 这个错误经过本人的断点测试，是因为配置文件里数据库名称和节点使用的数据库名称对不上造成的（此时，项目可以直接启动，正常进入DataSource初始化）
 
 # 修改配置文件
-将ds_master修改为mydb1，将ds_slave修改为mydb2，让节点名称对应起来
-报错如下
+将ds_master修改为mydb1，将ds_slave修改为mydb2，让节点名称对应起来  
+报错如下  
 Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
-Reason: Failed to determine a suitable driver class
+Reason: Failed to determine a suitable driver class  
 
 这是因为springboot配置多数据源初始化失败？
 那为什么不改上面配置前是成功的呢？
