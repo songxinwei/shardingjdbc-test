@@ -1,0 +1,83 @@
+server:
+  port: 8097
+
+#spring:
+#  application:
+#    name: mycat-demo
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    hikari:
+#      jdbc-url: jdbc:mysql://localhost:8066/TESTDB?characterEncoding=utf-8&useSSL=false
+#      username: root
+#      password: 123456
+#      driver-class-name: com.mysql.jdbc.Driver
+#      maximum-pool-size: 60
+#      minimum-idle: 10
+#      auto-commit: false
+#      connection-timeout: 30000
+#      idle-timeout: 600000
+#      validation-timeout: 60000
+#      read-only: false
+#      max-lifetime: 1800000
+#      connection-test-query: select 1
+
+mybatis:
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  type-aliases-package: com.tsm.shardingjdbctest.domain
+
+#sharding-jdbc 读写分离配置，读只会在从库slave-data-source-names配置的数据库
+#这些配置其实都是大部分都是自定义配置，只是为了配合ShardingMasterSlaveConfig的实例化
+sharding:
+  jdbc:
+    data-sources:
+      ds_master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.1.101:3306/mydb1?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
+      ds_slave:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://10.0.3.150:3306/mydb2?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
+#      ds_slave2:
+#        type: com.zaxxer.hikari.HikariDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        jdbc-url: jdbc:mysql://10.0.3.150:3306/catread?characterEncoding=utf8&useSSL=false
+#        username: root
+#        password: 123456
+    master-slave-rule:
+      name: ds_ms
+      master-data-source-name: ds_master
+      slave-data-source-names: [ds_slave]
+      load-balance-algorithm-type: round_robin
+    #分库 分表规则
+    sharding-rule:
+      tables:
+        user:
+          actual-data-nodes: mydb${1..2}.user${1..3}
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-inline-expression: mydb${id % 3+1}
+          table-strategy:
+            inline:
+              sharding-column: id
+              algorithm-inline-expression: user${id % 3+1}
+        age:
+          actual-data-nodes: mydb${1..2}.age${1..2}
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-inline-expression: mydb${id % 2+1}
+          table-strategy:
+            inline:
+              sharding-column: id
+              algorithm-inline-expression: age${id % 2+1}
+#      defaultDataSourceName: ds_0
+#      defaultDatabaseStrategy:
+#        inline:
+#          algorithmExpression: ds_$->{user_id % 2}
+#          shardingColumn: user_id
