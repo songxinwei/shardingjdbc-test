@@ -14,10 +14,10 @@
 //import java.util.Map;
 //
 ///**
-// * @Author: 江千月
+// * @Author: walkingWind
 // * @Date: 2019/1/22 17:45
 // * @Version 1.0
-// * sharding-jdbc读写分离测试
+// * sharding-jdbc Read-write splitting
 // */
 //@RestController
 //public class ShardingController {

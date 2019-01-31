@@ -4,7 +4,7 @@ package com.tsm.shardingjdbctest.util;
 public class StringUtils {
 
     /**
-     * 将null转为空字符串
+     * null to ""
      * @param o
      * @return
      */

@@ -38,10 +38,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @Author: 江千月
+ * @Author: walkingWind
  * @Date: 2019/1/22 16:07
  * @Version 1.0
- * 配置数据源详细信息
  */
 @Configuration
 @EnableTransactionManagement

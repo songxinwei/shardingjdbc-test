@@ -3,7 +3,7 @@ package com.tsm.shardingjdbctest.domain;
 import java.util.function.Supplier;
 
 /**
- * @Author: 江千月
+ * @Author: walkingWind
  * @Date: 2019/1/24 16:03
  * @Version 1.0
  */

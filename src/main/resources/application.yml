@@ -1,26 +1,6 @@
 server:
   port: 8097
 
-#spring:
-#  application:
-#    name: mycat-demo
-#  datasource:
-#    type: com.zaxxer.hikari.HikariDataSource
-#    hikari:
-#      jdbc-url: jdbc:mysql://localhost:8066/TESTDB?characterEncoding=utf-8&useSSL=false
-#      username: root
-#      password: 123456
-#      driver-class-name: com.mysql.jdbc.Driver
-#      maximum-pool-size: 60
-#      minimum-idle: 10
-#      auto-commit: false
-#      connection-timeout: 30000
-#      idle-timeout: 600000
-#      validation-timeout: 60000
-#      read-only: false
-#      max-lifetime: 1800000
-#      connection-test-query: select 1
-
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.tsm.shardingjdbctest.domain

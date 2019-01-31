@@ -1,7 +1,7 @@
 package com.tsm.shardingjdbctest.domain;
 
 /**
- * @Author: 江千月
+ * @Author: walkingWind
  * @Date: 2019/1/17 13:53
  * @Version 1.0
  */

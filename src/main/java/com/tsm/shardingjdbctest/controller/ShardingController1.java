@@ -24,10 +24,10 @@ import java.util.Map;
 
 
 /**
- * @Author: 江千月
+ * @Author: walkingWind
  * @Date: 2019/1/22 17:45
  * @Version 1.0
- * sharding-jdbc读写分离+分库分表测试
+ * sharding-jdbc Sharding + Read-write splitting test
  */
 @RestController
 @RequestMapping("user")
@@ -62,7 +62,7 @@ public class ShardingController1 {
     }
 
     /**
-     * 删除测试
+     * test del
      * @param id
      * @return
      */
@@ -73,14 +73,13 @@ public class ShardingController1 {
     }
 
     /**
-     * 测试分库分表后的排序问题
+     * test sort
      * @return
      * @throws Exception
      */
     @GetMapping("/sort")
     @Transactional
     public String test11() throws Exception{
-        //由于未做mysql主从复制，所以强制走写库进行测试
         HintManager.getInstance().setMasterRouteOnly();
 
         List<Map> list=testMapper.selectAllUserSortBy();
