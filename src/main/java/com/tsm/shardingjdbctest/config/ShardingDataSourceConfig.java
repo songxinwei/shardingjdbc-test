@@ -56,7 +56,7 @@ public class ShardingDataSourceConfig {
     private Environment env;
 
     /**
-     * 配置数据源
+     * setting data source
      * @return
      * @throws Exception
      */
@@ -71,10 +71,7 @@ public class ShardingDataSourceConfig {
         return dataSource;
     }
 
-    /**
-     * 可添加数据源一些配置信息
-     * @param hikariConfig
-     */
+
     private DataSource configDataSource(HikariConfig hikariConfig) {
         hikariConfig.setMaximumPoolSize(60);
         hikariConfig.setMinimumIdle(10);
