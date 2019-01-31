@@ -34,8 +34,8 @@ import java.util.Map;
 public class ShardingController1 {
     @Resource
     private TestMapper testMapper;
-    @Resource
-    private DataSource dataSource;
+//    @Resource
+//    private DataSource dataSource;
 
     @GetMapping("")
     @Transactional
@@ -90,7 +90,7 @@ public class ShardingController1 {
     }
 
     /**
-     * 测试分布式事务
+     * test Transaction
      * @return
      * @throws Exception
      */
@@ -98,9 +98,6 @@ public class ShardingController1 {
     @Transactional
     @ShardingTransactionType(TransactionType.XA)
     public String test1111() throws Exception{
-//        TransactionTypeHolder.set(TransactionType.LOCAL);//本地事务（不支持因网络或者硬件异常导致的分布式事务）
-//        TransactionTypeHolder.set(TransactionType.XA);//两阶段事务（分布式）
-//        TransactionTypeHolder.set(TransactionType.BASE);//柔性事务（分布式，sharding3.1.0暂不支持）
 
         User user1=new User();
         user1.setAge(24+(int)(Math.random()*60)*6);
