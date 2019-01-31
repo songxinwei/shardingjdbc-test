@@ -79,7 +79,7 @@ public class ShardingDataSourceConfig {
     private DataSource configDataSource(HikariConfig hikariConfig) {
         hikariConfig.setMaximumPoolSize(60);
         hikariConfig.setMinimumIdle(10);
-        hikariConfig.setConnectionTimeout(15000);//连接超时（毫秒）
+        hikariConfig.setConnectionTimeout(15000);
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 //        XATransactionManager xaTransactionManager=new AtomikosTransactionManager();
 //        xaTransactionManager.wrapDataSource();
@@ -97,7 +97,7 @@ public class ShardingDataSourceConfig {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(mybatisDataSource);
         sessionFactory.setTypeAliasesPackage(StringUtils.dealNull(env.getProperty("mybatis.type-aliases-package")));
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();//用于解析资源文件的策略接口，其特殊的地方在于，它应该提供带有*号这种通配符的资源路径。此接口是ResourceLoader接口的拓展接口。
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         sessionFactory.setMapperLocations(resolver.getResources(StringUtils.dealNull(env.getProperty("mybatis.mapper-locations"))));
         return sessionFactory.getObject();
     }
