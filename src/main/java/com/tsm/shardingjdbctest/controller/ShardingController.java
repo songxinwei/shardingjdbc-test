@@ -41,7 +41,6 @@
 //
 //        }
 //
-//        // 强制路由主库(只要在读写分离的配置基础上，查询前加这一句，就会强制走主库了)
 //        HintManager.getInstance().setMasterRouteOnly();
 //
 //        List<Map> list=testMapper.selectAllStudent();

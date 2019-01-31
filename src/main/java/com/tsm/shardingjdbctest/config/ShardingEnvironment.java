@@ -2,16 +2,22 @@ package com.tsm.shardingjdbctest.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tsm.shardingjdbctest.util.StringUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.shardingsphere.api.algorithm.masterslave.MasterSlaveLoadBalanceAlgorithm;
+import io.shardingsphere.api.algorithm.masterslave.RandomMasterSlaveLoadBalanceAlgorithm;
+import io.shardingsphere.api.algorithm.masterslave.RoundRobinMasterSlaveLoadBalanceAlgorithm;
 import io.shardingsphere.api.config.rule.MasterSlaveRuleConfiguration;
 import io.shardingsphere.api.config.rule.ShardingRuleConfiguration;
 import io.shardingsphere.api.config.rule.TableRuleConfiguration;
 import io.shardingsphere.api.config.strategy.InlineShardingStrategyConfiguration;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.env.YamlPropertySourceLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,11 +35,9 @@ public class ShardingEnvironment {
 
     private Map<String,Object> shardingRule;
 
-    /**
-     * 初始化ShardingRuleConfiguration
-     * @return
-     * @throws Exception
-     */
+    private Map<String,Object> masterSlaveRule;
+
+
     public ShardingRuleConfiguration initShardingRule() throws Exception{
         try {
             List<TableRuleConfiguration> tableRuleConfigurationList=new ArrayList<TableRuleConfiguration>();
@@ -42,11 +46,9 @@ public class ShardingEnvironment {
             while (iterator.hasNext()){
                 String key=iterator.next();
                 JSONObject eachSetting=JSONObject.parseObject(JSON.toJSONString(tables.get(key)));
-                // 配置Order表规则
                 TableRuleConfiguration orderTableRuleConfig = new TableRuleConfiguration();
                 orderTableRuleConfig.setLogicTable(key);
                 orderTableRuleConfig.setActualDataNodes(eachSetting.getString("actual-data-nodes"));
-                // 配置分库 + 分表策略
                 JSONObject databaseStrategy=eachSetting.getJSONObject("database-strategy");
                 JSONObject tableStrategy=eachSetting.getJSONObject("table-strategy");
                 JSONObject databaseStrategyInline=databaseStrategy.getJSONObject("inline");
@@ -56,12 +58,24 @@ public class ShardingEnvironment {
                 tableRuleConfigurationList.add(orderTableRuleConfig);
             }
 
-            // 配置分片规则
             ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
             shardingRuleConfig.getTableRuleConfigs().addAll(tableRuleConfigurationList);
+            shardingRuleConfig.setMasterSlaveRuleConfigs(getMasterSlaveRuleConfigurations());
             return shardingRuleConfig;
         }catch (Exception e){
             throw new RuntimeException("shardingRule init error!");
         }
     }
+
+
+    List<MasterSlaveRuleConfiguration> getMasterSlaveRuleConfigurations() {
+        List<MasterSlaveRuleConfiguration> list=new ArrayList<MasterSlaveRuleConfiguration>();
+        masterSlaveRule.forEach((k,v)->{
+            Map map=(Map)v;
+            MasterSlaveRuleConfiguration masterSlaveRuleConfig = new MasterSlaveRuleConfiguration(k,StringUtils.dealNull(map.get("master-data-source-name")),((Map)map.get("slave-data-source-names")).values(),StringUtils.dealNull(map.get("load-balance-algorithm-type")).equals("round_robin")?new RoundRobinMasterSlaveLoadBalanceAlgorithm():new RandomMasterSlaveLoadBalanceAlgorithm());
+            list.add(masterSlaveRuleConfig);
+        });
+        return list;
+    }
+
 }

@@ -25,53 +25,75 @@ mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.tsm.shardingjdbctest.domain
 
-#sharding-jdbc 读写分离配置，读只会在从库slave-data-source-names配置的数据库
-#这些配置其实都是大部分都是自定义配置，只是为了配合ShardingMasterSlaveConfig的实例化
+#sharding-jdbc settings
 sharding:
   jdbc:
+#    datasource:
+#      names: mydb_ms0,mydb_ms0_slave0,mydb_ms0_slave1,mydb_ms1,mydb_ms1_slave0,mydb_ms1_slave1
     data-sources:
-      ds_master:
+      mydb_ms0:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        jdbc-url: jdbc:mysql://192.168.1.101:3306/mydb1?characterEncoding=utf8&useSSL=false
+        jdbc-url: jdbc:mysql://ip1:3306/mydb_ms?characterEncoding=utf8&useSSL=false
         username: root
         password: 123456
-      ds_slave:
+      mydb_ms0_slave0:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        jdbc-url: jdbc:mysql://10.0.3.150:3306/mydb2?characterEncoding=utf8&useSSL=false
+        jdbc-url: jdbc:mysql://ip1:3306/mydb1?characterEncoding=utf8&useSSL=false
         username: root
         password: 123456
-#      ds_slave2:
-#        type: com.zaxxer.hikari.HikariDataSource
-#        driver-class-name: com.mysql.jdbc.Driver
-#        jdbc-url: jdbc:mysql://10.0.3.150:3306/catread?characterEncoding=utf8&useSSL=false
-#        username: root
-#        password: 123456
+      mydb_ms0_slave1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://ip1:3306/mydb2?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
+      mydb_ms1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://ip2:3306/mydb_ms?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
+      mydb_ms1_slave0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://ip2:3306/mydb1?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
+      mydb_ms1_slave1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://ip2:3306/mydb2?characterEncoding=utf8&useSSL=false
+        username: root
+        password: 123456
     master-slave-rule:
-      name: ds_ms
-      master-data-source-name: ds_master
-      slave-data-source-names: [ds_slave]
-      load-balance-algorithm-type: round_robin
-    #分库 分表规则
+      ds_ms0:
+        master-data-source-name: mydb_ms0
+        slave-data-source-names: [mydb_ms0_slave0,mydb_ms0_slave0]
+        load-balance-algorithm-type: round_robin
+      ds_ms1:
+        master-data-source-name: mydb_ms1
+        slave-data-source-names: [mydb_ms1_slave0,mydb_ms1_slave1]
+        load-balance-algorithm-type: round_robin
     sharding-rule:
       tables:
         user:
-          actual-data-nodes: mydb${1..2}.user${1..3}
+          actual-data-nodes: ds_ms${0..1}.user${1..3}
           database-strategy:
             inline:
-              sharding-column: id
-              algorithm-inline-expression: mydb${id % 3+1}
+              sharding-column: age
+              algorithm-inline-expression: ds_ms${age % 2}
           table-strategy:
             inline:
-              sharding-column: id
-              algorithm-inline-expression: user${id % 3+1}
+              sharding-column: age
+              algorithm-inline-expression: user${age % 3+1}
         age:
-          actual-data-nodes: mydb${1..2}.age${1..2}
+          actual-data-nodes: ds_ms${0..1}.age${1..2}
           database-strategy:
             inline:
               sharding-column: id
-              algorithm-inline-expression: mydb${id % 2+1}
+              algorithm-inline-expression: ds_ms${id % 2}
           table-strategy:
             inline:
               sharding-column: id
@@ -81,3 +103,4 @@ sharding:
 #        inline:
 #          algorithmExpression: ds_$->{user_id % 2}
 #          shardingColumn: user_id
+

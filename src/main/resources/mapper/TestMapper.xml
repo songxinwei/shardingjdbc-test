@@ -53,13 +53,19 @@
             <if test="name != null" >
                 name,
             </if>
+            <if test="age != null" >
+                age,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=INTEGER},
             </if>
             <if test="name != null" >
                 #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null" >
+                #{age,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -68,42 +74,8 @@
         DELETE FROM user WHERE id=#{id}
     </delete>
 
-    <!--<select id="selectAllStudent" resultType="map">-->
-        <!--SELECT * FROM student-->
-    <!--</select>-->
-
-    <!--<select id="selectAllStudent1" resultType="map">-->
-        <!--SELECT * FROM student-->
-    <!--</select>-->
-
-    <!--<insert id="addOneStudent" parameterType="com.tsm.shardingjdbctest.domain.Student">-->
-        <!--INSERT INTO student-->
-        <!--<trim prefix="(" suffix=")" suffixOverrides="," >-->
-            <!--<if test="id != null" >-->
-                <!--id,-->
-            <!--</if>-->
-            <!--<if test="name != null" >-->
-                <!--name,-->
-            <!--</if>-->
-            <!--<if test="age != null" >-->
-                <!--age,-->
-            <!--</if>-->
-        <!--</trim>-->
-        <!--<trim prefix="values (" suffix=")" suffixOverrides="," >-->
-            <!--<if test="id != null" >-->
-                <!--#{id,jdbcType=BIGINT},-->
-            <!--</if>-->
-            <!--<if test="name != null" >-->
-                <!--#{name,jdbcType=VARCHAR},-->
-            <!--</if>-->
-            <!--<if test="age != null" >-->
-                <!--#{age,jdbcType=VARCHAR},-->
-            <!--</if>-->
-        <!--</trim>-->
-    <!--</insert>-->
-
-    <!--<delete id="delOneStudent" parameterType="string">-->
-        <!--DELETE FROM student WHERE id=#{id}-->
-    <!--</delete>-->
+    <select id="selectAllUserSortBy" resultType="map">
+        SELECT * FROM user ORDER BY age DESC limit 0,2
+    </select>
 
 </mapper>
